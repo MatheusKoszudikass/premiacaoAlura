@@ -1,3 +1,12 @@
+
+    // Contador para diferentes humores
+    const moodCounts = {
+        happy: 0,
+        neutral: 0,
+        sad: 0
+    };
+
+
 async function fetchData() {
     const apiUrl = 'https://primiacao-alura-api.vercel.app/';
   
@@ -7,29 +16,28 @@ async function fetchData() {
         throw new Error('Erro ao fazer a requisição');
       }
       const data = await response.json();
+      
+      data.forEach(item => {
+        moodCounts.happy += item.alegre;
+        moodCounts.neutral += item.intermediario;
+        moodCounts.sad += item.triste;
+    });
       console.log('Dados recebidos:', data);
     } catch (error) {
       console.error('Erro na requisição:', error);
     }
   }
   
-  fetchData();
-
-fetchData();
 
 document.addEventListener('DOMContentLoaded', () => {
     const emojiButtons = document.querySelectorAll('.emoji-btn');
     const container = document.querySelector('.container');
     const confirmation = document.getElementById('confirmation');
     const chartContainer = document.querySelector('.chart-container'); // Adicionado para controle de exibição do gráfico
+    const comment = document.querySelector('.comment');
+    
 
-    // Contador para diferentes humores
-    const moodCounts = {
-        happy: 0,
-        neutral: 0,
-        sad: 0
-    };
-
+    fetchData();
     // Inicializa o gráfico e mantém o gráfico oculto inicialmente
     const ctx = document.getElementById('moodChart').getContext('2d');
     const moodChart = new Chart(ctx, {
@@ -77,6 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Oculta o contêiner do gráfico inicialmente
     chartContainer.style.display = 'none';
+    comment.style.display = 'none';
 
     emojiButtons.forEach(button => {
         button.addEventListener('click', () => {
@@ -101,6 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Mostrar o gráfico após a animação
                 chartContainer.style.display = 'block';
+                comment.style.display = 'block';
             });
         });
     });
